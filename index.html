@@ -9,18 +9,33 @@
 </head>
 
 <body>
-    <p id="a"></p>
+    <button id="but">Salut</button>
     <script>
-        let ajax = new XMLHttpRequest();
-        ajax.open('GET', 'test.txt', true);
-        ajax.send();
-
-        ajax.onreadystatechange = function() {
-            if (ajax.status === 200 && ajax.readyState === 4) {
-                console.log(ajax.response);
-                document.querySelector("#a").textContent = ajax.response;
-            }
+        function disImg(ajax) {
+            console.log(ajax);
+            let arr = new Uint8Array(ajax.response);
+            console.log(arr);
+            let raw = String.fromCharCode.apply(null, arr);
+            console.log(raw)
+            document.body.innerHTML += "<img alt='lol' src='data:image/jpg;base64," + btoa(raw) + "'>";
         }
+
+        function new_ajax(url, cb) {
+            let ajax = new XMLHttpRequest();
+            ajax.open('GET', url, true);
+            ajax.responseType = 'arraybuffer';
+            ajax.send();
+            console.log(ajax);
+            ajax.addEventListener("readystatechange", function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    cb(this);
+                }
+            });
+        }
+
+        document.querySelector("#but").addEventListener("click", function() {
+            new_ajax("gel.png", disImg);
+        });
     </script>
 
 </body>
